@@ -716,6 +716,7 @@ public class Messages extends NLS
     public static String LabelDividends;
     public static String LabelGreenWhiteRed;
     public static String LabelGreenYellowRed;
+    public static String LabelRedYellowGreen;
     public static String LabelGross;
     public static String LabelGrossNetCalculation;
     public static String LabelHeading;

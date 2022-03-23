@@ -12,6 +12,7 @@ import name.abuchen.portfolio.ui.util.Colors;
 enum ColorSchema
 {
     GREEN_YELLOW_RED(Messages.LabelGreenYellowRed), //
+    RED_YELLOW_GREEN(Messages.LabelRedYellowGreen), //
     GREEN_WHITE_RED(Messages.LabelGreenWhiteRed);
 
     // use a darker green to improve readability for the green-white-red schema
@@ -29,6 +30,24 @@ enum ColorSchema
     {
         return label;
     }
+    
+    private float getGYRHue(double performance, double max) {
+        // convert to 0 = -max -> 1 = +max
+
+        double p = performance;
+        p = Math.max(-max, p);
+        p = Math.min(max, p);
+        p = (p + max) * (1 / (2 * max));
+
+        // 0 = red, 60 = yellow, 120 = green
+        float hue = (float) p * 120f;
+        
+        return hue;
+    }
+    
+    private float getRYGHue(double performance, double max) {
+        return 120f - getGYRHue(performance, max);
+    }
 
     /* package */ DoubleFunction<Color> buildColorFunction(ResourceManager resourceManager)
     {
@@ -36,17 +55,11 @@ enum ColorSchema
         {
             case GREEN_YELLOW_RED:
                 return performance -> {
-                    // convert to 0 = -0.07 -> 1 = +0.07
-                    final double max = 0.07f;
-
-                    double p = performance;
-                    p = Math.max(-max, p);
-                    p = Math.min(max, p);
-                    p = (p + max) * (1 / (2 * max));
-
-                    // 0 = red, 60 = yellow, 120 = red
-                    float hue = (float) p * 120f;
-                    return resourceManager.createColor(new RGB(hue, 0.9f, 1f));
+                    return resourceManager.createColor(new RGB(getGYRHue(performance, 0.07f), 0.9f, 1f));
+                };
+            case RED_YELLOW_GREEN:
+                return performance -> {
+                    return resourceManager.createColor(new RGB(getRYGHue(performance, 0.01f), 0.9f, 1f));
                 };
             case GREEN_WHITE_RED:
                 return performance -> {
